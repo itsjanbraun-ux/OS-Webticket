@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTEGRA® WebTicket | Support-Ansicht – ORGA-SOFT</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+<style>
+@font-face{font-family:'IBM Plex Sans';font-weight:300 700;src:local('Segoe UI'),local('Helvetica Neue');font-display:swap;}
+@font-face{font-family:'IBM Plex Mono';font-weight:400 500;src:local('Consolas'),local('Courier New');font-display:swap;}
+
+:root{
+  --bg:#080f18;--surface:#0b1a28;--surface2:#102030;--surface3:#172d42;
+  --border:#1a3550;--border2:#244d70;
+  --os-orange:#e8521a;--os-orange2:#f0692f;--os-orange-dim:rgba(232,82,26,.13);
+  --os-blue:#1a7abf;--os-blue2:#4da6e0;--os-blue-dim:rgba(26,122,191,.14);
+  --success:#27ae60;--success-dim:rgba(39,174,96,.12);
+  --warn:#e6a817;--warn-dim:rgba(230,168,23,.12);
+  --danger:#c0392b;--danger-dim:rgba(192,57,43,.12);
+  --intern:#7c3aed;--intern-dim:rgba(124,58,237,.13);
+  --text:#ddeaf6;--text-2:#7aaabe;--text-3:#2e5570;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;}
+.view{display:none;min-height:100vh;flex-direction:column;}
+.view.active{display:flex;}
+
+/* ── LAYOUT: SIDEBAR + CONTENT ── */
+.app-shell{display:flex;flex:1;min-height:calc(100vh - 60px);}
+
+/* ── TOPBAR ── */
+.topbar{background:#040c14;border-bottom:2px solid var(--os-orange);display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 0;height:60px;position:sticky;top:0;z-index:300;box-shadow:0 2px 20px rgba(0,0,0,.6);}
+.logo-area{display:flex;align-items:center;height:100%;padding:0 20px;border-right:1px solid var(--border);min-width:220px;}
+.logo-area img{height:28px;object-fit:contain;}
+.logo-area .logo-sub{font-size:10px;font-weight:700;color:var(--os-orange);letter-spacing:.1em;text-transform:uppercase;margin-top:3px;}
+.topbar-center{flex:1;display:flex;align-items:center;padding:0 20px;}
+.global-search{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:7px 14px;width:360px;transition:border-color .15s;}
+.global-search:focus-within{border-color:var(--os-orange);}
+.global-search input{background:none;border:none;outline:none;color:var(--text);font-family:inherit;font-size:13px;width:100%;}
+.global-search input::placeholder{color:var(--text-3);}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.ic-btn{position:relative;background:none;border:none;color:var(--text-2);cursor:pointer;padding:7px;border-radius:8px;font-size:18px;transition:all .15s;}
+.ic-btn:hover{background:var(--surface2);color:var(--text);}
+.ic-badge{position:absolute;top:3px;right:3px;min-width:16px;height:16px;background:var(--danger);border:2px solid #040c14;border-radius:8px;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 2px;}
+.role-switch{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.role-btn{background:none;border:none;color:var(--text-2);padding:6px 14px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap;}
+.role-btn.active{background:var(--os-orange);color:#fff;}
+.agent-chip{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);padding:5px 14px 5px 7px;border-radius:24px;cursor:pointer;font-size:13px;color:var(--text-2);}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--os-orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.av-blue{background:var(--os-blue)!important;}
+.av-purple{background:var(--intern)!important;}
+.av-green{background:var(--success)!important;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.sidebar-section{padding:16px 12px 8px;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-3);}
+.sb-btn{display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:8px;margin:0 8px 2px;cursor:pointer;font-size:13px;color:var(--text-2);transition:all .15s;border:none;background:none;font-family:inherit;font-weight:500;width:calc(100% - 16px);text-align:left;}
+.sb-btn:hover{background:var(--surface2);color:var(--text);}
+.sb-btn.active{background:var(--os-orange-dim);color:var(--os-orange);}
+.sb-btn .sb-ico{font-size:16px;flex-shrink:0;}
+.sb-count{margin-left:auto;background:var(--surface3);color:var(--text-2);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:22px;text-align:center;}
+.sb-count.red{background:rgba(192,57,43,.2);color:#e05c4a;}
+.sb-count.orange{background:var(--os-orange-dim);color:var(--os-orange);}
+.sb-divider{height:1px;background:var(--border);margin:8px 12px;}
+.agent-list{padding:8px 12px;}
+.agent-row{display:flex;align-items:center;gap:8px;padding:6px 6px;border-radius:7px;cursor:pointer;transition:background .12s;}
+.agent-row:hover{background:var(--surface2);}
+.agent-name{font-size:12px;color:var(--text-2);flex:1;}
+.agent-count{font-size:11px;color:var(--text-3);}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;}
+.offline-dot{width:7px;height:7px;border-radius:50%;background:var(--text-3);flex-shrink:0;}
+
+/* ── MAIN CONTENT ── */
+.content{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.content-inner{padding:24px 28px;max-width:1200px;width:100%;}
+
+/* ── KPI CARDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px;}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:15px 18px;cursor:pointer;transition:all .15s;}
+.kpi:hover{border-color:var(--border2);transform:translateY(-1px);}
+.kpi.warn-kpi{border-color:rgba(230,168,23,.3);background:rgba(230,168,23,.04);}
+.kpi.danger-kpi{border-color:rgba(192,57,43,.3);background:rgba(192,57,43,.04);}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.kpi-val{font-size:26px;font-weight:700;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--text-2);margin-top:4px;}
+.kpi-trend{font-size:10px;margin-top:3px;}
+.trend-up{color:var(--danger);}
+.trend-down{color:var(--success);}
+
+/* ── QUEUE TOOLBAR ── */
+.queue-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.queue-tabs{display:flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:3px;}
+.qt{background:none;border:none;color:var(--text-2);padding:5px 14px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s;white-space:nowrap;}
+.qt.active{background:var(--os-orange);color:#fff;}
+.qt:hover:not(.active){background:var(--surface3);color:var(--text);}
+.fsel{background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 12px;font-family:inherit;font-size:12px;outline:none;cursor:pointer;}
+.fsel:focus{border-color:var(--os-orange);}
+.ml-auto{margin-left:auto;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:8px;border:none;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-primary{background:var(--os-orange);color:#fff;}
+.btn-primary:hover{background:var(--os-orange2);}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--os-orange);color:var(--os-orange);}
+.btn-intern{background:var(--intern-dim);color:#a78bfa;border:1px solid rgba(124,58,237,.3);}
+.btn-intern:hover{background:rgba(124,58,237,.2);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-xs{padding:3px 9px;font-size:11px;border-radius:6px;}
+
+/* ── TICKET TABLE ── */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.ttable{width:100%;border-collapse:collapse;}
+.ttable th{text-align:left;padding:9px 14px;color:var(--text-3);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--surface2);border-bottom:1px solid var(--border);}
+.ttable th input[type=checkbox]{accent-color:var(--os-orange);}
+.tr2{border-bottom:1px solid var(--border);transition:background .1s;}
+.tr2:hover{background:var(--surface2);}
+.tr2:last-child{border-bottom:none;}
+.tr2.sla-warn{border-left:3px solid var(--warn);}
+.tr2.sla-breach{border-left:3px solid var(--danger);background:rgba(192,57,43,.03);}
+.tr2.unassigned{border-left:3px solid var(--text-3);}
+.tr2 td{padding:12px 14px;vertical-align:middle;}
+.tr2.sla-warn td:first-child,.tr2.sla-breach td:first-child,.tr2.unassigned td:first-child{padding-left:11px;}
+.t-id{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--os-blue2);font-weight:500;}
+.t-cust{font-size:11px;color:var(--text-2);margin-top:2px;}
+.t-title2{font-weight:600;font-size:13px;cursor:pointer;color:var(--text);transition:color .12s;}
+.t-title2:hover{color:var(--os-orange);}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
+.bdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.b-open{background:var(--os-blue-dim);color:var(--os-blue2);}  .b-open .bdot{background:var(--os-blue2);}
+.b-prog{background:var(--warn-dim);color:var(--warn);} .b-prog .bdot{background:var(--warn);animation:pulse 1.5s infinite;}
+.b-wait{background:rgba(140,140,160,.1);color:#8faabf;} .b-wait .bdot{background:#8faabf;}
+.b-done{background:var(--success-dim);color:var(--success);} .b-done .bdot{background:var(--success);}
+.b-antwort{background:rgba(232,82,26,.15);color:var(--os-orange);} .b-antwort .bdot{background:var(--os-orange);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.prio{display:inline-block;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;}
+.ph{background:rgba(192,57,43,.15);color:#e05c4a;}
+.pm{background:var(--warn-dim);color:var(--warn);}
+.pl{background:var(--success-dim);color:var(--success);}
+.chip{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:var(--os-blue-dim);color:var(--os-blue2);border:1px solid rgba(26,122,191,.2);}
+
+/* SLA PILL */
+.sla-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.sla-ok{background:var(--success-dim);color:var(--success);}
+.sla-warn{background:var(--warn-dim);color:var(--warn);}
+.sla-breach{background:var(--danger-dim);color:#e05c4a;}
+
+/* ASSIGN CHIP */
+.assign-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2);cursor:pointer;padding:3px 8px;border-radius:6px;border:1px dashed var(--border);transition:all .15s;}
+.assign-chip:hover{border-color:var(--os-blue2);color:var(--os-blue2);}
+.assign-chip.assigned{border-style:solid;border-color:var(--border);}
+
+/* INLINE ACTIONS (appear on row hover) */
+.row-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+.tr2:hover .row-actions{opacity:1;}
+
+/* ── DETAIL VIEW ── */
+.detail-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;padding:24px 28px;}
+.detail-main{display:flex;flex-direction:column;gap:14px;}
+.detail-sidebar{display:flex;flex-direction:column;gap:14px;}
+.detail-header{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;}
+.dh-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.dh-title{font-size:17px;font-weight:700;line-height:1.3;}
+.dh-id{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--os-blue2);white-space:nowrap;}
+.dh-meta{font-size:12px;color:var(--text-2);margin-bottom:10px;}
+.dh-meta span{margin-right:14px;}
+.dh-badges{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.sec-lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+/* TABS */
+.tab-row{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;}
+.tab-btn{background:none;border:none;color:var(--text-2);padding:8px 15px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+.tab-btn.active{color:var(--os-orange);border-bottom-color:var(--os-orange);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* VORGÄNGE */
+.vorgang{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.vorgang:last-child{margin-bottom:0;}
+.vorgang.intern-v{border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.05);}
+.vorgang.support-v .vhead{background:rgba(26,122,191,.06);}
+.vhead{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.02);}
+.vorgang.intern-v .vhead{border-bottom-color:rgba(124,58,237,.25);}
+.vfrom{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;}
+.vtime{font-size:11px;color:var(--text-2);display:flex;align-items:center;gap:8px;}
+.vbody{padding:12px 13px;font-size:13px;line-height:1.65;}
+.ext-tag{background:var(--os-blue-dim);color:var(--os-blue2);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.int-tag{background:var(--intern-dim);color:#a78bfa;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.sup-tag{background:rgba(26,122,191,.2);color:var(--os-blue2);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+
+/* REPLY BOX */
+.reply-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.reply-mode-row{display:flex;gap:4px;margin-bottom:12px;}
+.rmode{background:none;border:none;color:var(--text-2);padding:5px 13px;border-radius:6px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;transition:all .15s;}
+.rmode.active-extern{background:var(--os-blue-dim);color:var(--os-blue2);}
+.rmode.active-intern{background:var(--intern-dim);color:#a78bfa;}
+.rmode:hover{background:var(--surface3);}
+.reply-box textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:inherit;font-size:13px;padding:10px 13px;resize:none;outline:none;transition:border-color .15s;min-height:100px;}
+.reply-box textarea.intern-ta{border-color:rgba(124,58,237,.35);background:rgba(124,58,237,.04);}
+.reply-box textarea:focus{border-color:var(--os-orange);}
+.reply-box textarea.intern-ta:focus{border-color:var(--intern);}
+.reply-actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;flex-wrap:wrap;}
+
+/* TEMPLATES DROPDOWN */
+.tmpl-btn{position:relative;display:inline-flex;align-items:center;gap:6px;}
+.tmpl-menu{position:absolute;bottom:calc(100% + 8px);left:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:260px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.5);display:none;}
+.tmpl-menu.open{display:block;}
+.tmpl-item{padding:8px 12px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text-2);transition:all .12s;}
+.tmpl-item:hover{background:var(--surface2);color:var(--text);}
+.tmpl-item strong{color:var(--text);display:block;font-size:13px;margin-bottom:1px;}
+
+/* SIDEBAR CARD */
+.sidebar-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.field-row{margin-bottom:10px;}
+.field-row:last-child{margin-bottom:0;}
+.field-row label{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3);display:block;margin-bottom:4px;}
+.field-val{font-size:13px;color:var(--text);}
+.editable-field{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:inherit;font-size:13px;color:var(--text);outline:none;width:100%;transition:border-color .15s;cursor:pointer;}
+.editable-field:hover{border-color:var(--border2);}
+.editable-field:focus{border-color:var(--os-orange);}
+
+/* TIME TRACKING */
+.time-track{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
+.tt-time{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:500;color:var(--text);flex:1;}
+.tt-btn{background:none;border:1px solid var(--border);color:var(--text-2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;transition:all .15s;}
+.tt-btn:hover{border-color:var(--os-orange);color:var(--os-orange);}
+.tt-btn.running{border-color:var(--success);color:var(--success);}
+
+/* ATT */
+.att-list{display:flex;flex-direction:column;gap:6px;}
+.att-item{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
+.att-item:hover{border-color:var(--border2);}
+.att-name{flex:1;font-size:12px;font-weight:500;}
+.att-who{font-size:10px;color:var(--text-3);}
+.att-size{font-size:11px;color:var(--text-2);}
+.att-dl{background:none;border:none;color:var(--os-blue2);cursor:pointer;padding:3px 8px;border-radius:5px;font-size:13px;}
+.att-dl:hover{background:var(--os-blue-dim);}
+
+/* ESCALATION BOX */
+.escalation-box{background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-radius:10px;padding:14px;}
+
+/* MODAL OVERLAY */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:flex;align-items:center;justify-content:center;display:none;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:460px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px;}
+.modal-close{float:right;background:none;border:none;color:var(--text-2);cursor:pointer;font-size:20px;line-height:1;}
+.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.form-group label{font-size:11px;font-weight:700;color:var(--text-2);}
+.form-group select,.form-group input,.form-group textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;outline:none;}
+.form-group select:focus,.form-group input:focus{border-color:var(--os-orange);}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;background:var(--success);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);transform:translateY(80px);opacity:0;transition:all .3s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{background:var(--danger);}
+.toast.info{background:var(--os-blue);}
+
+/* FOOTER */
+.footer{background:#040c14;border-top:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-3);}
+.footer a{color:var(--text-3);text-decoration:none;}
+.footer a:hover{color:var(--text-2);}
+.footer-links{display:flex;gap:16px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW: SUPPORT DASHBOARD
+═══════════════════════════════════════════════════ -->
+<div id="view-support-dashboard" class="view active">
+
+  <!-- TOPBAR -->
+  <nav class="topbar">
+    <div class="logo-area">
+      <div>
+        <img src="https://orga-soft.de/os-content/uploads/2022/08/Logo_ORGA-SOFT_weiss_cmyk.png" alt="ORGA-SOFT">
+        <div class="logo-sub">WebTicket Support</div>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <div class="global-search">
+        🔍 <input type="text" placeholder="Tickets, Kunden, Mandanten suchen … (Strg+K)">
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="role-switch">
+        <button class="role-btn" onclick="window.location='index.html'">👤 Kundenportal</button>
+        <button class="role-btn active">🛠 Support-Ansicht</button>
+      </div>
+      <button class="ic-btn" title="Benachrichtigungen">🔔<div class="ic-badge">4</div></button>
+      <div class="agent-chip"><div class="avatar">SK</div>Schreiber, Klaus ▾</div>
+    </div>
+  </nav>
+
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">Queue</div>
+      <button class="sb-btn active" onclick="setView('support-dashboard')">
+        <span class="sb-ico">📥</span> Alle Tickets <span class="sb-count orange">14</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: Meine Tickets','info')">
+        <span class="sb-ico">👤</span> Meine Tickets <span class="sb-count">6</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: Nicht zugewiesen','info')">
+        <span class="sb-ico">📭</span> Nicht zugewiesen <span class="sb-count red">3</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: SLA-Gefährdet','info')">
+        <span class="sb-ico">⚠️</span> SLA gefährdet <span class="sb-count red">2</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: Eskaliert','info')">
+        <span class="sb-ico">🔺</span> Eskaliert <span class="sb-count red">1</span>
+      </button>
+      <div class="sb-divider"></div>
+      <div class="sidebar-section">Status</div>
+      <button class="sb-btn" onclick="showToast('Filter: Offen','info')">
+        <span class="sb-ico">🔵</span> Offen <span class="sb-count">5</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: In Bearbeitung','info')">
+        <span class="sb-ico">🟡</span> In Bearbeitung <span class="sb-count orange">6</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: Warten','info')">
+        <span class="sb-ico">⏳</span> Warten auf Kunde <span class="sb-count">3</span>
+      </button>
+      <button class="sb-btn" onclick="showToast('Filter: Gelöst heute','info')">
+        <span class="sb-ico">✅</span> Heute gelöst <span class="sb-count">4</span>
+      </button>
+      <div class="sb-divider"></div>
+      <div class="sidebar-section">Team (online)</div>
+      <div class="agent-list">
+        <div class="agent-row"><div class="avatar" style="width:22px;height:22px;font-size:9px;">SK</div><span class="agent-name">Schreiber, K.</span><span class="online-dot"></span><span class="agent-count">6</span></div>
+        <div class="agent-row"><div class="avatar av-blue" style="width:22px;height:22px;font-size:9px;">MR</div><span class="agent-name">Müller, R.</span><span class="online-dot"></span><span class="agent-count">4</span></div>
+        <div class="agent-row"><div class="avatar av-green" style="width:22px;height:22px;font-size:9px;">PW</div><span class="agent-name">Pflüger, W.</span><span class="online-dot"></span><span class="agent-count">4</span></div>
+        <div class="agent-row"><div class="avatar av-purple" style="width:22px;height:22px;font-size:9px;">HS</div><span class="agent-name">Haas, S.</span><span class="offline-dot"></span><span class="agent-count">0</span></div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sidebar-section">Shortcuts</div>
+      <button class="sb-btn" onclick="openModal('modal-stats')">
+        <span class="sb-ico">📊</span> Auswertungen
+      </button>
+      <button class="sb-btn" onclick="showToast('Einstellungen öffnen …','info')">
+        <span class="sb-ico">⚙️</span> Einstellungen
+      </button>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+      <div class="content-inner">
+
+        <!-- KPI ROW -->
+        <div class="kpi-row">
+          <div class="kpi">
+            <div class="kpi-label">Gesamt offen</div>
+            <div class="kpi-val">14</div>
+            <div class="kpi-sub">alle Agenten</div>
+            <div class="kpi-trend trend-up">▲ +2 heute</div>
+          </div>
+          <div class="kpi danger-kpi">
+            <div class="kpi-label">⚠ Nicht zugewiesen</div>
+            <div class="kpi-val" style="color:#e05c4a">3</div>
+            <div class="kpi-sub">sofort prüfen</div>
+            <div class="kpi-trend trend-up">▲ neu eingegangen</div>
+          </div>
+          <div class="kpi warn-kpi">
+            <div class="kpi-label">SLA gefährdet</div>
+            <div class="kpi-val" style="color:var(--warn)">2</div>
+            <div class="kpi-sub">Reaktion ausstehend</div>
+            <div class="kpi-trend" style="color:var(--warn)">⏱ &lt; 1 Std. verbleibend</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Heute gelöst</div>
+            <div class="kpi-val" style="color:var(--success)">4</div>
+            <div class="kpi-sub">Ø 3,2 Std. / Ticket</div>
+            <div class="kpi-trend trend-down">▼ bessere Lösungszeit</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">⌀ Erstantwort</div>
+            <div class="kpi-val">2,4 h</div>
+            <div class="kpi-sub">SLA-Ziel: 4 Std.</div>
+            <div class="kpi-trend trend-down">✓ im Ziel</div>
+          </div>
+        </div>
+
+        <!-- QUEUE TOOLBAR -->
+        <div class="queue-toolbar">
+          <div class="queue-tabs">
+            <button class="qt active">Alle (14)</button>
+            <button class="qt" onclick="this.parentElement.querySelectorAll('.qt').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Meine (6)</button>
+            <button class="qt" onclick="this.parentElement.querySelectorAll('.qt').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Nicht zugewiesen (3)</button>
+            <button class="qt" onclick="this.parentElement.querySelectorAll('.qt').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Eskaliert (1)</button>
+          </div>
+          <select class="fsel"><option>Alle Prioritäten</option><option>Hoch</option><option>Mittel</option><option>Niedrig</option></select>
+          <select class="fsel"><option>Alle Produktgruppen</option><option>Finanzbuchhaltung</option><option>Lohnbuchhaltung</option><option>Einkauf</option></select>
+          <select class="fsel"><option>Alle Agenten</option><option>Schreiber, Klaus</option><option>Müller, Robert</option><option>Pflüger, Werner</option></select>
+          <div class="ml-auto" style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm">⬇ Export</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-new')">＋ Ticket anlegen</button>
+          </div>
+        </div>
+
+        <!-- TICKET TABLE -->
+        <div class="table-wrap">
+          <table class="ttable">
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" onchange="document.querySelectorAll('.row-cb').forEach(c=>c.checked=this.checked)"></th>
+                <th style="width:110px">Ticket-Nr.</th>
+                <th>Bezeichnung / Kunde</th>
+                <th style="width:140px">Produktgruppe</th>
+                <th style="width:78px">Prio</th>
+                <th style="width:165px">Status</th>
+                <th style="width:130px">SLA</th>
+                <th style="width:130px">Zugewiesen</th>
+                <th style="width:80px">Aktionen</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- SLA BREACH -->
+              <tr class="tr2 sla-breach" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0091</span></td>
+                <td>
+                  <div class="t-title2">Lohnabrechnung Mai blockiert – kein Druck möglich</div>
+                  <div class="t-cust">🏢 Brauerei Waldhaus · Mandant 2031</div>
+                </td>
+                <td><span class="chip">Lohnbuchhaltung</span></td>
+                <td><span class="prio ph">Hoch</span></td>
+                <td><span class="badge b-open"><span class="bdot"></span>Offen</span></td>
+                <td><span class="sla-pill sla-breach">🔴 Überfällig 2 Std.</span></td>
+                <td>
+                  <div class="assign-chip" onclick="event.stopPropagation();openModal('modal-assign')">
+                    📭 Zuweisen
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()">
+                  <div class="row-actions">
+                    <button class="btn btn-xs btn-primary" onclick="showToast('Ticket übernommen!')">Übernehmen</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- SLA WARN -->
+              <tr class="tr2 sla-warn" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0089</span></td>
+                <td>
+                  <div class="t-title2">Buchungsmaske zeigt falsches Datum</div>
+                  <div class="t-cust">🏢 Kunze Mineralwasser · Mandant 1042</div>
+                </td>
+                <td><span class="chip">Finanzbuchhaltung</span></td>
+                <td><span class="prio ph">Hoch</span></td>
+                <td><span class="badge b-prog"><span class="bdot"></span>In Bearbeitung</span></td>
+                <td><span class="sla-pill sla-warn">🟡 noch 1:20 Std.</span></td>
+                <td>
+                  <div class="assign-chip assigned" onclick="event.stopPropagation()">
+                    <div class="avatar" style="width:18px;height:18px;font-size:8px;">SK</div>Schreiber
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()">
+                  <div class="row-actions">
+                    <button class="btn btn-xs btn-ghost" onclick="setView('support-detail')">Öffnen</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- UNASSIGNED -->
+              <tr class="tr2 unassigned" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0090</span></td>
+                <td>
+                  <div class="t-title2">Neue Benutzergruppe anlegen – Einkauf</div>
+                  <div class="t-cust">🏢 XOX Gebäck · Mandant 1815</div>
+                </td>
+                <td><span class="chip">Einkauf</span></td>
+                <td><span class="prio pm">Mittel</span></td>
+                <td><span class="badge b-open"><span class="bdot"></span>Offen</span></td>
+                <td><span class="sla-pill sla-ok">🟢 noch 3:40 Std.</span></td>
+                <td>
+                  <div class="assign-chip" onclick="event.stopPropagation();openModal('modal-assign')">
+                    📭 Zuweisen
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()">
+                  <div class="row-actions">
+                    <button class="btn btn-xs btn-primary" onclick="showToast('Ticket übernommen!')">Übernehmen</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="tr2" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0088</span></td>
+                <td>
+                  <div class="t-title2">Druckvorlage Lohnzettel anpassen</div>
+                  <div class="t-cust">🏢 Kunze Mineralwasser · Mandant 1042</div>
+                </td>
+                <td><span class="chip">Lohnbuchhaltung</span></td>
+                <td><span class="prio pm">Mittel</span></td>
+                <td><span class="badge b-antwort"><span class="bdot"></span>Antwort eingegangen</span></td>
+                <td><span class="sla-pill sla-ok">🟢 noch 4:00 Std.</span></td>
+                <td>
+                  <div class="assign-chip assigned">
+                    <div class="avatar av-blue" style="width:18px;height:18px;font-size:8px;">MR</div>Müller R.
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()">
+                  <div class="row-actions">
+                    <button class="btn btn-xs btn-ghost" onclick="setView('support-detail')">Öffnen</button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="tr2" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0087</span></td>
+                <td>
+                  <div class="t-title2">Jahresabschluss 2024 Export fehlerhaft</div>
+                  <div class="t-cust">🏢 Schloss Quelle · Mandant 3301</div>
+                </td>
+                <td><span class="chip">Finanzbuchhaltung</span></td>
+                <td><span class="prio ph">Hoch</span></td>
+                <td><span class="badge b-prog"><span class="bdot"></span>In Bearbeitung</span></td>
+                <td><span class="sla-pill sla-ok">🟢 noch 5:15 Std.</span></td>
+                <td>
+                  <div class="assign-chip assigned">
+                    <div class="avatar av-green" style="width:18px;height:18px;font-size:8px;">PW</div>Pflüger
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()"><div class="row-actions"><button class="btn btn-xs btn-ghost">Öffnen</button></div></td>
+              </tr>
+
+              <tr class="tr2" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0085</span></td>
+                <td>
+                  <div class="t-title2">Einkaufspreisliste wird nicht aktualisiert</div>
+                  <div class="t-cust">🏢 Brauerei Hacklberg · Mandant 4420</div>
+                </td>
+                <td><span class="chip">Einkauf</span></td>
+                <td><span class="prio pm">Mittel</span></td>
+                <td><span class="badge b-wait"><span class="bdot"></span>Warten auf Kunde</span></td>
+                <td><span class="sla-pill sla-ok">🟢 pausiert</span></td>
+                <td>
+                  <div class="assign-chip assigned">
+                    <div class="avatar" style="width:18px;height:18px;font-size:8px;">SK</div>Schreiber
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()"><div class="row-actions"><button class="btn btn-xs btn-ghost">Öffnen</button></div></td>
+              </tr>
+
+              <tr class="tr2" onclick="setView('support-detail')">
+                <td onclick="event.stopPropagation()"><input type="checkbox" class="row-cb"></td>
+                <td><span class="t-id">#TK-2024-0083</span></td>
+                <td>
+                  <div class="t-title2">Kostenstellen-Report zeigt falsche Summen</div>
+                  <div class="t-cust">🏢 Rhodius Mineralquellen · Mandant 5510</div>
+                </td>
+                <td><span class="chip">Controlling</span></td>
+                <td><span class="prio pl">Niedrig</span></td>
+                <td><span class="badge b-wait"><span class="bdot"></span>Warten auf Kunde</span></td>
+                <td><span class="sla-pill sla-ok">🟢 pausiert</span></td>
+                <td>
+                  <div class="assign-chip assigned">
+                    <div class="avatar av-blue" style="width:18px;height:18px;font-size:8px;">MR</div>Müller R.
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()"><div class="row-actions"><button class="btn btn-xs btn-ghost">Öffnen</button></div></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div>© 2025 ORGA-SOFT Organisation und Software GmbH · INTEGRA® WebTicket</div>
+        <div class="footer-links"><a href="#">Datenschutz</a><a href="#">Impressum</a><a href="#">Hilfe</a></div>
+      </footer>
+    </div><!-- /content -->
+  </div><!-- /app-shell -->
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW: SUPPORT TICKET DETAIL
+═══════════════════════════════════════════════════ -->
+<div id="view-support-detail" class="view">
+  <nav class="topbar">
+    <div class="logo-area">
+      <div>
+        <img src="https://orga-soft.de/os-content/uploads/2022/08/Logo_ORGA-SOFT_weiss_cmyk.png" alt="ORGA-SOFT">
+        <div class="logo-sub">WebTicket Support</div>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <div class="global-search">🔍 <input type="text" placeholder="Tickets, Kunden, Mandanten suchen …"></div>
+    </div>
+    <div class="topbar-right">
+      <div class="role-switch">
+        <button class="role-btn" onclick="window.location='index.html'">👤 Kundenportal</button>
+        <button class="role-btn active">🛠 Support-Ansicht</button>
+      </div>
+      <button class="ic-btn">🔔<div class="ic-badge">4</div></button>
+      <div class="agent-chip"><div class="avatar">SK</div>Schreiber, Klaus ▾</div>
+    </div>
+  </nav>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-section">Queue</div>
+      <button class="sb-btn" onclick="setView('support-dashboard')"><span class="sb-ico">📥</span> Alle Tickets <span class="sb-count orange">14</span></button>
+      <button class="sb-btn"><span class="sb-ico">👤</span> Meine Tickets <span class="sb-count">6</span></button>
+      <button class="sb-btn"><span class="sb-ico">📭</span> Nicht zugewiesen <span class="sb-count red">3</span></button>
+      <button class="sb-btn"><span class="sb-ico">⚠️</span> SLA gefährdet <span class="sb-count red">2</span></button>
+      <div class="sb-divider"></div>
+      <div class="sidebar-section">Kontext: Mandant 1042</div>
+      <button class="sb-btn active"><span class="sb-ico">🎫</span> Dieses Ticket</button>
+      <button class="sb-btn" onclick="showToast('Weitere Tickets des Kunden …','info')"><span class="sb-ico">📋</span> Alle Tickets (8) <span class="sb-count">8</span></button>
+      <button class="sb-btn" onclick="showToast('Kundenprofil öffnen …','info')"><span class="sb-ico">🏢</span> Kundenprofil</button>
+      <div class="sb-divider"></div>
+      <div class="sidebar-section">Team</div>
+      <div class="agent-list">
+        <div class="agent-row"><div class="avatar" style="width:22px;height:22px;font-size:9px;">SK</div><span class="agent-name">Schreiber, K.</span><span class="online-dot"></span></div>
+        <div class="agent-row"><div class="avatar av-blue" style="width:22px;height:22px;font-size:9px;">MR</div><span class="agent-name">Müller, R.</span><span class="online-dot"></span></div>
+        <div class="agent-row"><div class="avatar av-green" style="width:22px;height:22px;font-size:9px;">PW</div><span class="agent-name">Pflüger, W.</span><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <div class="content">
+      <!-- BACK + TICKET HEADER -->
+      <div style="padding:16px 28px 0;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--surface);">
+        <button class="btn btn-ghost btn-sm" onclick="setView('support-dashboard')">← Zurück zur Queue</button>
+        <span style="color:var(--text-3);font-size:12px;">|</span>
+        <span style="font-size:12px;color:var(--text-2);">📥 Ticket #TK-2024-0089 von Kunze Mineralwasser</span>
+        <div style="margin-left:auto;display:flex;gap:8px;padding-bottom:14px;">
+          <!-- STATUS INLINE CHANGE -->
+          <select class="fsel" style="font-weight:700;" onchange="showToast('Status aktualisiert: '+this.value)">
+            <option>⚙️ In Bearbeitung</option>
+            <option>🔵 Offen</option>
+            <option>⏳ Warten auf Kunde</option>
+            <option>✅ Gelöst</option>
+            <option>🔒 Geschlossen</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-assign')">👤 Zuweisen</button>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-escalate')" style="color:#e05c4a;border-color:rgba(192,57,43,.3)">🔺 Eskalieren</button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Ticket gedruckt …','info')">🖨 Drucken</button>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <!-- MAIN -->
+        <div class="detail-main">
+
+          <!-- HEADER INFO -->
+          <div class="detail-header">
+            <div class="dh-top">
+              <div class="dh-title">Buchungsmaske zeigt falsches Datum</div>
+              <div class="dh-id">#TK-2024-0089</div>
+            </div>
+            <div class="dh-meta">
+              <span>🏢 Kunze Mineralwasser</span>
+              <span>📧 mueller@kunze-mineralwasser.de</span>
+              <span>👤 Müller, Hans (Mandant 1042)</span>
+            </div>
+            <div class="dh-badges">
+              <span class="badge b-prog"><span class="bdot"></span>In Bearbeitung</span>
+              <span class="prio ph">Hoch</span>
+              <span class="chip">Finanzbuchhaltung</span>
+              <span class="chip">Fehler / Bug</span>
+              <span class="sla-pill sla-warn">⏱ SLA: noch 1:20 Std.</span>
+            </div>
+          </div>
+
+          <!-- VORGÄNGE / ANHÄNGE TABS -->
+          <div class="card">
+            <div class="tab-row">
+              <button class="tab-btn active" onclick="switchTab(this,'td-v')">💬 Vorgänge (5)</button>
+              <button class="tab-btn" onclick="switchTab(this,'td-a')">📎 Anhänge (3)</button>
+              <button class="tab-btn" onclick="switchTab(this,'td-hist')">📋 Änderungsprotokoll</button>
+            </div>
+
+            <!-- VORGÄNGE -->
+            <div id="td-v" class="tab-content active">
+
+              <div class="vorgang">
+                <div class="vhead">
+                  <div class="vfrom"><div class="avatar" style="width:26px;height:26px;font-size:10px;">MH</div>Müller, Hans (Kunde)<span class="ext-tag">Extern</span></div>
+                  <div class="vtime">02.03.2025, 09:14 Uhr</div>
+                </div>
+                <div class="vbody">Guten Morgen,<br><br>beim Öffnen der Buchungsmaske (Prog.-Nr. 2300) wird als Buchungsdatum immer der 01.01.2024 vorgeschlagen. Das Feld lässt sich manuell korrigieren, aber bei jedem Neuöffnen tritt das Problem wieder auf. Bitte um Prüfung.</div>
+              </div>
+
+              <div class="vorgang support-v">
+                <div class="vhead">
+                  <div class="vfrom"><div class="avatar" style="width:26px;height:26px;font-size:10px;">SK</div>Schreiber, Klaus<span class="sup-tag">Support (Extern)</span></div>
+                  <div class="vtime">02.03.2025, 11:30 Uhr</div>
+                </div>
+                <div class="vbody">Guten Tag Herr Müller,<br><br>vielen Dank für Ihre Meldung. Wir haben das Problem nachvollziehen können und prüfen derzeit die Ursache. Wir melden uns in Kürze.</div>
+              </div>
+
+              <!-- INTERNE NOTIZ – nur für Support sichtbar -->
+              <div class="vorgang intern-v">
+                <div class="vhead">
+                  <div class="vfrom"><div class="avatar av-purple" style="width:26px;height:26px;font-size:10px;">SK</div>Schreiber, Klaus<span class="int-tag">🔒 Intern</span></div>
+                  <div class="vtime">02.03.2025, 13:45 Uhr <button class="btn btn-xs btn-ghost" style="margin-left:8px;" onclick="showToast('Intern-Flag entfernt – Vorgang wird extern sichtbar','info')">Als extern setzen</button></div>
+                </div>
+                <div class="vbody" style="color:#c4b5fd;">
+                  <strong>🔒 Interne Notiz – für Kunden nicht sichtbar</strong><br><br>
+                  Bug-Ursache identifiziert: In Version 8.2.1 wurde ein Registry-Key für das Default-Datum fälschlicherweise auf den Installationszeitpunkt gesetzt statt auf das Systemdatum. Hotfix in Entwicklung, ETA 04.03.2025. Ticket intern auf Level 2 eskaliert, Entwickler Haas informiert. Keine Kommunikation an Kunden bzgl. technischer Details.
+                </div>
+              </div>
+
+              <div class="vorgang intern-v">
+                <div class="vhead">
+                  <div class="vfrom"><div class="avatar av-purple" style="width:26px;height:26px;font-size:9px;">HS</div>Haas, Sebastian (Dev)<span class="int-tag">🔒 Intern</span></div>
+                  <div class="vtime">02.03.2025, 16:00 Uhr</div>
+                </div>
+                <div class="vbody" style="color:#c4b5fd;">
+                  Fix committed in Branch fix/date-init-2024. Review durch Klaus bitte. Build wird morgen früh gerollt.
+                </div>
+              </div>
+
+              <div class="vorgang support-v">
+                <div class="vhead">
+                  <div class="vfrom"><div class="avatar" style="width:26px;height:26px;font-size:10px;">SK</div>Schreiber, Klaus<span class="sup-tag">Support (Extern)</span></div>
+                  <div class="vtime">03.03.2025, 09:00 Uhr</div>
+                </div>
+                <div class="vbody">Guten Morgen Herr Müller,<br><br>wir haben die Ursache gefunden. Es handelt sich um ein Konfigurationsproblem in Version 8.2.1. Ein Hotfix kann voraussichtlich am <strong>04.03.2025</strong> eingespielt werden.</div>
+              </div>
+
+            </div>
+
+            <!-- ANHÄNGE -->
+            <div id="td-a" class="tab-content">
+              <div class="att-list">
+                <div class="att-item"><span style="font-size:18px">🖼️</span><div style="flex:1"><div class="att-name">Screenshot_Buchungsmaske_Fehler.png</div><div class="att-who">Müller, Hans · 02.03.2025</div></div><span class="att-size">234 KB</span><button class="att-dl">↓</button></div>
+                <div class="att-item"><span style="font-size:18px">📄</span><div style="flex:1"><div class="att-name">Fehlerbeschreibung_Detail.pdf</div><div class="att-who">Müller, Hans · 02.03.2025</div></div><span class="att-size">87 KB</span><button class="att-dl">↓</button></div>
+                <div class="att-item"><span style="font-size:18px">📄</span><div style="flex:1"><div class="att-name">Hotfix_Release_Notes_8.2.2.pdf</div><div class="att-who">Schreiber, Klaus · 03.03.2025</div></div><span class="att-size">512 KB</span><button class="att-dl">↓</button></div>
+              </div>
+            </div>
+
+            <!-- PROTOKOLL -->
+            <div id="td-hist" class="tab-content">
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--text-2);">
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">03.03. 09:22</span><span>Müller, Hans · Antwort verfasst (extern)</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">03.03. 09:00</span><span>Schreiber, Klaus · Antwort versandt (extern)</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">02.03. 16:00</span><span>Haas, Sebastian · Interne Notiz hinzugefügt</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">02.03. 14:10</span><span>Schreiber, Klaus · Ticket an Level-2 eskaliert</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">02.03. 13:45</span><span>Schreiber, Klaus · Interne Notiz hinzugefügt</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--text-3);white-space:nowrap">02.03. 11:30</span><span>Schreiber, Klaus · Antwort versandt (extern) · Status → In Bearbeitung</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0"><span style="color:var(--text-3);white-space:nowrap">02.03. 09:14</span><span>Müller, Hans · Ticket erstellt · Zugewiesen an Schreiber, Klaus</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- REPLY BOX -->
+          <div class="reply-box">
+            <div class="sec-lbl">Antwort / Notiz verfassen</div>
+            <div class="reply-mode-row">
+              <button class="rmode active-extern" id="mode-extern" onclick="setReplyMode('extern')">💬 Extern (für Kunden sichtbar)</button>
+              <button class="rmode" id="mode-intern" onclick="setReplyMode('intern')">🔒 Intern (nur für Support)</button>
+            </div>
+            <textarea id="reply-ta" placeholder="Antwort an den Kunden verfassen …"></textarea>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-top:4px;">
+              <span id="intern-hint"></span>
+              <span id="reply-char">0 Zeichen</span>
+            </div>
+            <div class="reply-actions">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <button class="btn btn-ghost btn-sm">📎 Anhang</button>
+                <div class="tmpl-btn">
+                  <button class="btn btn-ghost btn-sm" onclick="toggleTmpl()">📝 Textbaustein ▾</button>
+                  <div class="tmpl-menu" id="tmpl-menu">
+                    <div class="tmpl-item" onclick="insertTemplate('Guten Tag,\n\nvielen Dank für Ihre Meldung. Wir haben das Problem nachvollziehen können und bearbeiten Ihr Anliegen in Kürze.\n\nMit freundlichen Grüßen\nIhr ORGA-SOFT Support-Team')">
+                      <strong>Eingangsbestätigung</strong>Wir haben Ihre Meldung erhalten …
+                    </div>
+                    <div class="tmpl-item" onclick="insertTemplate('Guten Tag,\n\nwir benötigen für die weitere Bearbeitung folgende Informationen:\n- INTEGRA-Version (Hilfe → Info)\n- Fehlermeldung (Screenshot)\n- Betroffener Mandant\n\nBitte antworten Sie auf dieses Ticket.\n\nMit freundlichen Grüßen\nIhr ORGA-SOFT Support-Team')">
+                      <strong>Rückfrage an Kunden</strong>Wir benötigen weitere Informationen …
+                    </div>
+                    <div class="tmpl-item" onclick="insertTemplate('Guten Tag,\n\nwir freuen uns, Ihnen mitteilen zu können, dass Ihr gemeldetes Problem behoben wurde. Der Hotfix steht ab sofort zur Verfügung.\n\nBitte bestätigen Sie uns kurz, ob das Problem damit gelöst ist.\n\nMit freundlichen Grüßen\nIhr ORGA-SOFT Support-Team')">
+                      <strong>Hotfix bereit</strong>Das Problem wurde behoben …
+                    </div>
+                    <div class="tmpl-item" onclick="insertTemplate('Guten Tag,\n\nwir haben Ihr Anliegen an unser Entwicklungsteam weitergeleitet. Die Bearbeitungszeit kann aufgrund der technischen Komplexität 3–5 Werktage betragen. Wir melden uns, sobald ein Update verfügbar ist.\n\nMit freundlichen Grüßen\nIhr ORGA-SOFT Support-Team')">
+                      <strong>Weiterleitung Entwicklung</strong>Ihr Anliegen wurde eskaliert …
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <select class="fsel btn-sm" onchange="showToast('Status nach Absenden: '+this.value)">
+                  <option>Status: unverändert</option>
+                  <option>→ Warten auf Kunde</option>
+                  <option>→ In Bearbeitung</option>
+                  <option>→ Gelöst</option>
+                </select>
+                <button class="btn btn-primary" onclick="sendReply()">Absenden →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="detail-sidebar">
+
+          <!-- ZEITERFASSUNG -->
+          <div class="sidebar-card">
+            <div class="sec-lbl">⏱ Zeiterfassung</div>
+            <div class="time-track">
+              <div class="tt-time" id="timer-display">00:00:00</div>
+              <button class="tt-btn" id="timer-btn" onclick="toggleTimer()">▶ Start</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:6px;">Gebuchte Zeit gesamt: <strong style="color:var(--text-2)">1:45 Std.</strong></div>
+          </div>
+
+          <!-- TICKET DETAILS (bearbeitbar) -->
+          <div class="sidebar-card">
+            <div class="sec-lbl">Ticket-Details</div>
+            <div class="field-row">
+              <label>Status</label>
+              <select class="editable-field" onchange="showToast('Status gespeichert: '+this.value)">
+                <option>⚙️ In Bearbeitung</option><option>🔵 Offen</option><option>⏳ Warten auf Kunde</option><option>✅ Gelöst</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Priorität</label>
+              <select class="editable-field" onchange="showToast('Priorität gespeichert: '+this.value)">
+                <option>🔴 Hoch</option><option>🟡 Mittel</option><option>🟢 Niedrig</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Zugewiesen an</label>
+              <select class="editable-field" onchange="showToast('Zugewiesen an: '+this.value)">
+                <option>Schreiber, Klaus</option><option>Müller, Robert</option><option>Pflüger, Werner</option><option>Haas, Sebastian</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Produktgruppe</label>
+              <div class="field-val"><span class="chip">Finanzbuchhaltung</span></div>
+            </div>
+            <div class="field-row">
+              <label>Kategorie</label>
+              <select class="editable-field" onchange="showToast('Kategorie gespeichert')">
+                <option>Fehler / Bug</option><option>Anpassung</option><option>Frage</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Programm-Nr.</label>
+              <input class="editable-field" value="2300" onblur="showToast('Gespeichert')">
+            </div>
+            <div class="field-row">
+              <label>Mandant</label>
+              <div class="field-val" style="font-family:'IBM Plex Mono',monospace;">1042 – Kunze Mineralwasser</div>
+            </div>
+          </div>
+
+          <!-- ZEITINFO -->
+          <div class="sidebar-card">
+            <div class="sec-lbl">Zeitinfo & SLA</div>
+            <div class="field-row"><label>Erstellt</label><div class="field-val">02.03.2025, 09:14 Uhr</div></div>
+            <div class="field-row"><label>Erstantwort</label><div class="field-val" style="color:var(--success)">✓ 02.03. 11:30 (2:16 Std.)</div></div>
+            <div class="field-row"><label>SLA-Frist (nächste Antwort)</label><div class="field-val" style="color:var(--warn)">⏱ Heute 16:00 Uhr</div></div>
+            <div class="field-row"><label>Gebuchte Zeit</label><div class="field-val">1:45 Std.</div></div>
+          </div>
+
+          <!-- AKTIONEN -->
+          <div class="sidebar-card">
+            <div class="sec-lbl">Aktionen</div>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:7px;" onclick="openModal('modal-assign')">👤 Neu zuweisen</button>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:7px;" onclick="openModal('modal-escalate')" style="color:#e05c4a;border-color:rgba(192,57,43,.3)">🔺 Eskalieren / Weiterleiten</button>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:7px;" onclick="showToast('Ticket zusammengeführt','info')">🔗 Ticket zusammenführen</button>
+            <button class="btn btn-success" style="width:100%;justify-content:center;" onclick="showToast('Ticket als gelöst markiert!')">✓ Als gelöst markieren</button>
+          </div>
+
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div>© 2025 ORGA-SOFT Organisation und Software GmbH</div>
+        <div class="footer-links"><a href="#">Datenschutz</a><a href="#">Impressum</a></div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════ MODALS ════════ -->
+
+<!-- ZUWEISUNG -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal">
+    <div class="modal-title">👤 Ticket zuweisen <button class="modal-close" onclick="closeModal('modal-assign')">✕</button></div>
+    <div class="form-group"><label>Agent</label>
+      <select><option>Schreiber, Klaus (6 Tickets)</option><option>Müller, Robert (4 Tickets)</option><option>Pflüger, Werner (4 Tickets)</option><option>Haas, Sebastian (Level 2 Dev)</option></select>
+    </div>
+    <div class="form-group"><label>Hinweis an Agenten (optional)</label><textarea style="min-height:70px;resize:none;" placeholder="Interne Notiz zur Übergabe …"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-assign')">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal('modal-assign');showToast('Ticket zugewiesen!')">Zuweisen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ESKALATION -->
+<div class="modal-overlay" id="modal-escalate">
+  <div class="modal">
+    <div class="modal-title">🔺 Eskalieren / Weiterleiten <button class="modal-close" onclick="closeModal('modal-escalate')">✕</button></div>
+    <div class="form-group"><label>Eskalationsstufe</label>
+      <select><option>Level 2 – Senior Support</option><option>Level 3 – Entwicklung</option><option>Extern – Hersteller</option></select>
+    </div>
+    <div class="form-group"><label>Zuweisen an</label>
+      <select><option>Haas, Sebastian (Dev)</option><option>Müller, Robert</option></select>
+    </div>
+    <div class="form-group"><label>Begründung (intern)</label><textarea style="min-height:80px;resize:none;" placeholder="Warum wird eskaliert? Bisherige Schritte?"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-escalate')">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal('modal-escalate');showToast('Ticket eskaliert!')">Eskalieren</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEUES TICKET -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal" style="width:520px;">
+    <div class="modal-title">➕ Ticket manuell anlegen <button class="modal-close" onclick="closeModal('modal-new')">✕</button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group"><label>Mandant</label><input placeholder="z. B. 1042"></div>
+      <div class="form-group"><label>Ansprechpartner</label><input placeholder="Name des Kunden"></div>
+      <div class="form-group"><label>Produktgruppe</label><select><option>Finanzbuchhaltung</option><option>Lohnbuchhaltung</option><option>Einkauf</option></select></div>
+      <div class="form-group"><label>Priorität</label><select><option>Hoch</option><option>Mittel</option><option>Niedrig</option></select></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Bezeichnung</label><input placeholder="Kurzer Betreff"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Beschreibung</label><textarea style="min-height:80px;resize:none;" placeholder="Problembeschreibung …"></textarea></div>
+      <div class="form-group"><label>Zuweisen an</label><select><option>Schreiber, Klaus</option><option>Müller, Robert</option><option>Pflüger, Werner</option></select></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-new')">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal('modal-new');showToast('Ticket angelegt!')">Ticket anlegen</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+let timerRunning=false,timerSec=0,timerInterval=null;
+
+function setView(n){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById('view-'+n).classList.add('active');window.scrollTo(0,0);}
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast';
+  if(type==='info')t.classList.add('info');
+  else if(type==='err')t.classList.add('err');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function switchTab(btn,id){
+  btn.closest('.card').querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.closest('.card').querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function setReplyMode(mode){
+  const ta=document.getElementById('reply-ta');
+  const hint=document.getElementById('intern-hint');
+  document.getElementById('mode-extern').className='rmode'+(mode==='extern'?' active-extern':'');
+  document.getElementById('mode-intern').className='rmode'+(mode==='intern'?' active-intern':'');
+  if(mode==='intern'){
+    ta.className='intern-ta';
+    ta.placeholder='Interne Notiz – NUR für Support-Team sichtbar, nicht für den Kunden …';
+    hint.textContent='🔒 Diese Nachricht ist intern und wird dem Kunden NICHT angezeigt.';
+    hint.style.color='#a78bfa';
+  } else {
+    ta.className='';
+    ta.placeholder='Antwort an den Kunden verfassen …';
+    hint.textContent='';
+  }
+  ta.oninput=()=>document.getElementById('reply-char').textContent=ta.value.length+' Zeichen';
+}
+
+function toggleTmpl(){document.getElementById('tmpl-menu').classList.toggle('open');}
+function insertTemplate(txt){
+  document.getElementById('reply-ta').value=txt;
+  document.getElementById('tmpl-menu').classList.remove('open');
+  document.getElementById('reply-char').textContent=txt.length+' Zeichen';
+  showToast('Textbaustein eingefügt','info');
+}
+
+function sendReply(){
+  const ta=document.getElementById('reply-ta');
+  if(!ta.value.trim()){showToast('Bitte Text eingeben.','err');return;}
+  ta.value='';
+  document.getElementById('reply-char').textContent='0 Zeichen';
+  showToast('Antwort versendet!');
+}
+
+function toggleTimer(){
+  const btn=document.getElementById('timer-btn');
+  if(!timerRunning){
+    timerRunning=true;btn.textContent='⏸ Stopp';btn.classList.add('running');
+    timerInterval=setInterval(()=>{
+      timerSec++;
+      const h=String(Math.floor(timerSec/3600)).padStart(2,'0');
+      const m=String(Math.floor((timerSec%3600)/60)).padStart(2,'0');
+      const s=String(timerSec%60).padStart(2,'0');
+      document.getElementById('timer-display').textContent=h+':'+m+':'+s;
+    },1000);
+  } else {
+    timerRunning=false;btn.textContent='▶ Start';btn.classList.remove('running');
+    clearInterval(timerInterval);
+    showToast('Zeit gespeichert: '+document.getElementById('timer-display').textContent,'info');
+  }
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+// Close template menu on outside click
+document.addEventListener('click',e=>{if(!e.target.closest('.tmpl-btn'))document.getElementById('tmpl-menu')?.classList.remove('open');});
+</script>
+</body>
+</html>
